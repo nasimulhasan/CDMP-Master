@@ -12,12 +12,12 @@ export default function Results({ result, onRestart }: ResultsProps) {
   const isPassed = result.percentage >= 70;
 
   return (
-    <div className="h-full w-full flex items-center justify-center px-4 py-4 md:py-6 overflow-hidden">
-      <div className="max-w-6xl w-full h-full bg-white rounded-[1.5rem] md:rounded-[2rem] shadow-2xl shadow-slate-200/60 border border-slate-100 flex flex-col overflow-hidden relative">
+    <div className="min-h-full w-full flex items-center justify-center px-4 py-4 md:py-6">
+      <div className="max-w-6xl w-full bg-white rounded-[1.5rem] md:rounded-[2rem] shadow-2xl shadow-slate-200/60 border border-slate-100 flex flex-col relative">
         {/* Background Decoration */}
         <div className={`absolute top-0 left-0 w-full h-1.5 md:h-2 shrink-0 ${isPassed ? 'bg-emerald-500' : 'bg-amber-500'}`} />
         
-        <div className="flex-1 overflow-hidden flex flex-col md:flex-row">
+        <div className="flex flex-col md:flex-row">
           {/* Left Side: Summary Stats */}
           <div className="w-full md:w-1/3 p-6 md:p-8 border-b md:border-b-0 md:border-r border-slate-100 flex flex-col items-center justify-center text-center shrink-0">
             <div className={`w-12 h-12 md:w-16 md:h-16 rounded-full flex items-center justify-center mb-3 md:mb-4 ${
@@ -76,7 +76,7 @@ export default function Results({ result, onRestart }: ResultsProps) {
           </div>
 
           {/* Right Side: Detailed Review */}
-          <div className="flex-1 flex flex-col overflow-hidden bg-slate-50/50">
+          <div className="flex-1 flex flex-col bg-slate-50/50">
             <div className="p-4 md:p-6 border-b border-slate-100 bg-white shrink-0">
               <h2 className="text-base md:text-lg font-bold text-slate-800 flex items-center gap-2">
                 Review Answers
@@ -86,7 +86,7 @@ export default function Results({ result, onRestart }: ResultsProps) {
               </h2>
             </div>
 
-            <div className="flex-1 overflow-y-auto p-4 md:p-6 space-y-3 md:space-y-4 custom-scrollbar">
+            <div className="p-4 md:p-6 space-y-3 md:space-y-4">
               {result.details.map((item, idx) => (
                 <div 
                   key={idx}

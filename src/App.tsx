@@ -74,8 +74,8 @@ export default function App() {
   }, []);
 
   return (
-    <div className="h-screen bg-[#f8fafc] overflow-hidden flex flex-col">
-      <main className="flex-1 relative overflow-hidden">
+    <div className="min-h-screen bg-[#f8fafc] flex flex-col">
+      <main className="flex-1 relative">
         <AnimatePresence mode="wait">
           {status === 'setup' && (
             <motion.div 

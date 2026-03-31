@@ -18,7 +18,7 @@ export default function Setup({ onStart }: SetupProps) {
   const displayTime = mode === 'total' ? time : Math.ceil((questionCount * 54) / 60);
 
   return (
-    <div className="h-full w-full flex items-center justify-center px-4 py-4 md:py-6">
+    <div className="min-h-full w-full flex items-center justify-center px-4 py-4 md:py-6">
       <div className="max-w-2xl w-full bg-white rounded-[2rem] md:rounded-[2.5rem] shadow-2xl shadow-slate-200/60 border border-slate-100 p-6 md:p-10 text-center">
         <h1 className="text-2xl md:text-3xl font-black text-slate-900 mb-6 md:mb-8 tracking-tight">
           CDMP Master

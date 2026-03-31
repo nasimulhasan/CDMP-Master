@@ -94,9 +94,9 @@ export default function Quiz({ questions, timeLimitMinutes, mode, onComplete }: 
   const progress = ((currentIdx + 1) / questions.length) * 100;
 
   return (
-    <div className="h-full w-full max-w-6xl mx-auto px-4 py-4 md:py-6 flex flex-col overflow-hidden">
-      {/* Header / Timer */}
-      <div className="mb-4 md:mb-6 shrink-0">
+    <div className="min-h-full w-full max-w-6xl mx-auto px-4 py-4 md:py-6 flex flex-col">
+      {/* Header / Timer - Sticky on mobile */}
+      <div className="sticky top-0 z-20 bg-[#f8fafc]/80 backdrop-blur-md -mx-4 px-4 py-2 mb-4 md:mb-6 md:static md:bg-transparent md:backdrop-blur-none md:p-0">
         <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-3 md:p-4 flex items-center justify-between">
           <div className="flex items-center gap-2 md:gap-3">
             <div className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 font-bold text-sm md:text-base">
@@ -127,20 +127,20 @@ export default function Quiz({ questions, timeLimitMinutes, mode, onComplete }: 
       </div>
 
       {/* Question Card */}
-      <div className="flex-1 overflow-hidden flex flex-col">
+      <div className="flex-1 flex flex-col">
         <AnimatePresence mode="wait">
           <motion.div
             key={currentIdx}
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: -20 }}
-            className="bg-white rounded-3xl shadow-xl shadow-slate-200/50 border border-slate-100 p-6 md:p-10 flex-1 flex flex-col overflow-hidden"
+            className="bg-white rounded-3xl shadow-xl shadow-slate-200/50 border border-slate-100 p-5 md:p-10 flex-1 flex flex-col"
           >
             <h2 className="text-lg md:text-2xl font-bold text-slate-800 leading-tight mb-4 md:mb-6 shrink-0">
               {currentQuestion.question}
             </h2>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4 flex-1 overflow-y-auto pr-2 custom-scrollbar items-start">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-2 md:gap-4 items-start">
               {currentQuestion.displayOptions.map((option, idx) => {
                 const isSelected = answers[currentIdx] === option;
                 return (
@@ -150,7 +150,7 @@ export default function Quiz({ questions, timeLimitMinutes, mode, onComplete }: 
                     tabIndex={0}
                     onClick={() => handleSelect(option)}
                     onKeyDown={(e) => e.key === 'Enter' && handleSelect(option)}
-                    className={`w-full text-left p-4 md:p-5 rounded-2xl border-2 transition-colors duration-200 flex items-start justify-between cursor-pointer group ${
+                    className={`w-full text-left p-3.5 md:p-5 rounded-2xl border-2 transition-colors duration-200 flex items-start justify-between cursor-pointer group ${
                       isSelected 
                         ? 'border-indigo-600 bg-indigo-50/50 text-indigo-900 shadow-md' 
                         : 'border-slate-100 bg-white hover:border-slate-200 hover:bg-slate-50 text-slate-600'
