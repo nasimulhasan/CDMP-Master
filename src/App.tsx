@@ -41,20 +41,26 @@ export default function App() {
 
     // 3. Process each question to have 4 options (1 correct + 3 random incorrect)
     const processed: QuizQuestion[] = selected.map(q => {
-      const correctOption = q.options[q.correctAnswerIndex];
-      const incorrectOptions = q.options.filter((_, idx) => idx !== q.correctAnswerIndex);
+      const correctIndices = q.correctAnswerIndices || (q.correctAnswerIndex !== undefined ? [q.correctAnswerIndex] : []);
+      const correctOptions = correctIndices.map(idx => q.options[idx]);
+      const incorrectOptions = q.options.filter((_, idx) => !correctIndices.includes(idx));
       
-      // Pick 3 random incorrect options
-      const randomIncorrect = shuffle(incorrectOptions).slice(0, 3);
+      // Pick random incorrect options to fill up to 4 total options if possible
+      // But if it's multiple choice, maybe we should just show all options?
+      // The user said "some questions might have multiple correct answers".
+      // Let's keep the "4 options" logic but ensure all correct ones are included.
+      
+      const neededIncorrect = Math.max(0, 4 - correctOptions.length);
+      const randomIncorrect = shuffle(incorrectOptions).slice(0, neededIncorrect);
       
       // Combine and shuffle
-      const displayOptions = shuffle([correctOption, ...randomIncorrect]);
+      const displayOptions = shuffle([...correctOptions, ...randomIncorrect]);
       
       return {
         id: q.id,
         question: q.question,
         displayOptions,
-        correctAnswer: correctOption
+        correctAnswers: correctOptions
       };
     });
 
@@ -83,7 +89,7 @@ export default function App() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="h-full w-full"
+              className="min-h-full w-full"
             >
               <Setup onStart={startQuiz} />
             </motion.div>
@@ -95,7 +101,7 @@ export default function App() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="h-full w-full"
+              className="min-h-full w-full"
             >
               <Quiz 
                 questions={quizQuestions} 
@@ -112,7 +118,7 @@ export default function App() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="h-full w-full"
+              className="min-h-full w-full"
             >
               <Results 
                 result={result} 

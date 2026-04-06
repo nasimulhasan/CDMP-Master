@@ -12,7 +12,7 @@ interface QuizProps {
 
 export default function Quiz({ questions, timeLimitMinutes, mode, onComplete }: QuizProps) {
   const [currentIdx, setCurrentIdx] = useState(0);
-  const [answers, setAnswers] = useState<Record<number, string>>({});
+  const [answers, setAnswers] = useState<Record<number, string[]>>({});
   const [timeLeft, setTimeLeft] = useState(mode === 'total' ? timeLimitMinutes * 60 : 54);
   const [totalTimeSeconds, setTotalTimeSeconds] = useState(0);
   const [isWarning, setIsWarning] = useState(false);
@@ -61,7 +61,12 @@ export default function Quiz({ questions, timeLimitMinutes, mode, onComplete }: 
   };
 
   const handleSelect = (option: string) => {
-    setAnswers({ ...answers, [currentIdx]: option });
+    const currentAnswers = answers[currentIdx] || [];
+    if (currentAnswers.includes(option)) {
+      setAnswers({ ...answers, [currentIdx]: currentAnswers.filter(a => a !== option) });
+    } else {
+      setAnswers({ ...answers, [currentIdx]: [...currentAnswers, option] });
+    }
   };
 
   const handleSubmit = () => {
@@ -69,13 +74,14 @@ export default function Quiz({ questions, timeLimitMinutes, mode, onComplete }: 
     
     let score = 0;
     const details = questions.map((q, idx) => {
-      const userAnswer = answers[idx] || "No answer";
-      const isCorrect = userAnswer === q.correctAnswer;
+      const userAnswers = answers[idx] || [];
+      const isCorrect = userAnswers.length === q.correctAnswers.length && 
+                        userAnswers.every(a => q.correctAnswers.includes(a));
       if (isCorrect) score++;
       return {
         question: q.question,
-        userAnswer,
-        correctAnswer: q.correctAnswer,
+        userAnswers,
+        correctAnswers: q.correctAnswers,
         isCorrect
       };
     });
@@ -136,13 +142,20 @@ export default function Quiz({ questions, timeLimitMinutes, mode, onComplete }: 
             exit={{ opacity: 0, x: -20 }}
             className="bg-white rounded-3xl shadow-xl shadow-slate-200/50 border border-slate-100 p-5 md:p-10 flex-1 flex flex-col"
           >
-            <h2 className="text-lg md:text-2xl font-bold text-slate-800 leading-tight mb-4 md:mb-6 shrink-0">
-              {currentQuestion.question}
-            </h2>
+            <div className="flex items-center justify-between mb-4 md:mb-6 shrink-0">
+              <h2 className="text-lg md:text-2xl font-bold text-slate-800 leading-tight">
+                {currentQuestion.question}
+              </h2>
+              {currentQuestion.correctAnswers.length > 1 && (
+                <span className="shrink-0 ml-4 px-3 py-1 bg-indigo-100 text-indigo-700 text-[10px] md:text-xs font-bold rounded-full uppercase tracking-wider">
+                  Select all that apply
+                </span>
+              )}
+            </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-2 md:gap-4 items-start">
               {currentQuestion.displayOptions.map((option, idx) => {
-                const isSelected = answers[currentIdx] === option;
+                const isSelected = (answers[currentIdx] || []).includes(option);
                 return (
                   <div
                     key={idx}
@@ -159,10 +172,10 @@ export default function Quiz({ questions, timeLimitMinutes, mode, onComplete }: 
                     <span className="flex-1 text-sm md:text-base font-medium leading-snug break-words pr-4 whitespace-normal min-w-0">
                       {option}
                     </span>
-                    <div className={`w-4 h-4 md:w-5 md:h-5 rounded-full border-2 flex items-center justify-center transition-colors shrink-0 mt-0.5 ${
+                    <div className={`w-4 h-4 md:w-5 md:h-5 rounded-md border-2 flex items-center justify-center transition-colors shrink-0 mt-0.5 ${
                       isSelected ? 'border-indigo-600 bg-indigo-600' : 'border-slate-200 group-hover:border-slate-300'
                     }`}>
-                      {isSelected && <div className="w-1 md:w-1.5 h-1 md:h-1.5 rounded-full bg-white" />}
+                      {isSelected && <CheckCircle2 size={12} className="text-white" />}
                     </div>
                   </div>
                 );

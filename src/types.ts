@@ -2,14 +2,15 @@ export interface Question {
   id: number;
   question: string;
   options: string[];
-  correctAnswerIndex: number;
+  correctAnswerIndex?: number;
+  correctAnswerIndices?: number[];
 }
 
 export interface QuizQuestion {
   id: number;
   question: string;
   displayOptions: string[];
-  correctAnswer: string;
+  correctAnswers: string[];
 }
 
 export type QuizStatus = 'setup' | 'active' | 'finished';
@@ -23,8 +24,8 @@ export interface QuizResult {
   mode: QuizMode;
   details: {
     question: string;
-    userAnswer: string;
-    correctAnswer: string;
+    userAnswers: string[];
+    correctAnswers: string[];
     isCorrect: boolean;
   }[];
 }
